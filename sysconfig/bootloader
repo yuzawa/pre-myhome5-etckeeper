@@ -1,0 +1,5 @@
+DEFAULT_APPEND="quiet rhgb "
+FAILSAFE_APPEND="quiet rhgb  ide=nodma apm=off noresume edd=off nomodeset 3 "
+LOADER_LOCATION=none
+LOADER_TYPE=grub2-bls
+SECURE_BOOT=yes

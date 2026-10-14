@@ -1,0 +1,31 @@
+#%PAM-1.0
+# Generic Fedora/RHEL config - use this unless you are running xrdp
+# sessions into a GNOME desktop, in which case use the Gnome-specific
+# config below instead, which also unlocks GNOME Keyring automatically.
+auth       include      password-auth
+account    include      password-auth
+password   include      password-auth
+
+# pam_selinux.so close must be the first session rule so any
+# prior context is torn down before we set up the new one.
+session    required     pam_selinux.so close
+session    required     pam_loginuid.so
+# pam_selinux.so open must run before any module below that
+# should execute in the user's context. Without this pair,
+# session processes are left running as unconfined_service_t
+# instead of unconfined_t. See rhbz#2499948.
+session    required     pam_selinux.so open
+session    required     pam_namespace.so
+session    optional     pam_keyinit.so force revoke
+session    include      password-auth
+session    optional     pam_lastlog.so silent
+
+# Gnome specific config. Uncomment this block and comment out the
+# generic block above if you are running xrdp sessions into a GNOME
+# desktop. This uses GDM's own PAM stack, which already includes the
+# correct pam_selinux.so/pam_namespace.so ordering and additionally
+# unlocks GNOME Keyring automatically at login.
+#auth       include      gdm-password
+#account    include      gdm-password
+#password   include      gdm-password
+#session    include      gdm-password
